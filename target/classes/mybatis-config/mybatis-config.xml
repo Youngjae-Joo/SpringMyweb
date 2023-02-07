@@ -6,6 +6,6 @@
  <!-- 마이바티스 부연 설정.  -->
  <configuration>
  	<typeAliases>
-	
+		<typeAlias type="com.cordhistory.myweb.command.TripVO" alias="TripVO"/>
  	</typeAliases>
  </configuration>
