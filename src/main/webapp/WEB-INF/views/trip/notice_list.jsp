@@ -47,7 +47,7 @@
 					<c:forEach var="colList" items="${list}" varStatus="num">
 					<tr>
 						<td>${num.count}</td>
-						<td>${colList.title}</td>
+						<td class="tit_notice"><a href="notice_view?tno=${colList.tno}">${colList.title}</a></td>
 						<td>${colList.hit}</td>
 						<td><fmt:formatDate value="${colList.regdate}" pattern="yyyy-MM-dd"/></td>
 					</tr>
