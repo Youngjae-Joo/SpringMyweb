@@ -41,7 +41,7 @@
 		<p class="btn_line txt_right">
 			<a href="notice_modify?tno=${vo.tno}" class="btn_bbs">글수정</a>
 			<a href="javascript:;" class="btn_bbs" onclick="noticeDelete()">글삭제</a>
-			<a href="notice_list" class="btn_bbs">목록</a>
+			<a href="notice_list?page=${pvo.page}&amount=${pvo.amount}&searchType=${pvo.cri.searchType}&searchName=${pvo.cri.searchName}" class="btn_bbs">목록</a>
 		</p>
 		<ul class="near_list mt20">
 			<!-- 

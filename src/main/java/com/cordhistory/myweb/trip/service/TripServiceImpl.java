@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cordhistory.myweb.command.TripVO;
+import com.cordhistroy.myweb.util.Criteria;
 
 @Service("tripService")
 public class TripServiceImpl implements TripService{
@@ -19,11 +20,16 @@ public class TripServiceImpl implements TripService{
 	}
 
 	@Override
-	public ArrayList<TripVO> getList() {
+	public ArrayList<TripVO> getList(Criteria cri) {
 		
-		return tripMapper.getList();
+		return tripMapper.getList(cri);
 	}
 
+	@Override
+	public int getTotal(Criteria cri) {
+		return tripMapper.getTotal(cri);
+	}
+	
 	
 	@Override
 	public TripVO getContent(int tno) {
@@ -50,6 +56,6 @@ public class TripServiceImpl implements TripService{
 	public ArrayList<TripVO> getPrevNext(int tno) {
 		return tripMapper.getPrevNext(tno);
 	}
-	
+
 	
 }

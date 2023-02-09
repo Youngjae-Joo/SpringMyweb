@@ -8,9 +8,41 @@
   		insert into trip(tripdate, writer, title, content) values(#{tripdate}, #{writer}, #{title}, #{content})
   	</insert>
   	
-  	<select id="getList" resultType="TripVO" >
+  	
+  <!-- 	<select id="getList" resultType="TripVO" >
   		select * from trip order by tno desc
+  		limit #{pageStart}, #{amount}
+  	</select> -->
+  	
+  	<!-- 동적쿼리구문의 test에는 vo의 getter, map의 키값이 들어갑니다. -->
+  	<select id="getList" resultType="TripVO" >
+  		select * from trip
+  			<if test="searchType == 'title' ">where title like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'content' ">where content like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'writer' ">where writer like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'titcont' ">where title or content like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == null or searchType == '' ">where 1=1 </if> 
+  			
+  			<!--<choose>
+  				<when test="searchType == 'title'">where title like concat('%',#{searchName},'%')</when>
+  				<when test="searchType == 'content'">where content like concat('%',#{searchName},'%')</when>
+  				<when test="searchType == 'writer'">where writer like concat('%',#{searchName},'%')</when>
+  				<when test="searchType == null or searchType == ''">where title like concat('%',#{searchName},'%')
+  												 					or content like concat('%',#{searchName}, '%')</when>
+  				<otherwise>where 1=1</otherwise>
+  			</choose>-->
+  		order by tno desc limit #{pageStart}, #{amount}
   	</select>
+  	
+  	<select id="getTotal" resultType="int">
+  		select count(*) as total from trip
+  			<if test="searchType == 'title' ">where title like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'content' ">where content like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'writer' ">where writer like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == 'titcont' ">where title or content like concat('%',#{searchName},'%')</if> 
+  			<if test="searchType == null or searchType == '' ">where 1=1 </if> 
+  	</select>
+  	
   	
   	<select id="getContent" resultType="TripVO">
   		select * from trip where tno=#{tno}

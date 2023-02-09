@@ -17,6 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cordhistory.myweb.command.TripVO;
 import com.cordhistory.myweb.trip.service.TripService;
+import com.cordhistroy.myweb.util.Criteria;
+import com.cordhistroy.myweb.util.PageVO;
 
 @Controller
 @RequestMapping("/trip")
@@ -28,23 +30,44 @@ public class NoticeController {
 	
 	//목록
 	@RequestMapping("/notice_list")
-	public String notice_list(Model model) {
+	public String notice_list(Criteria cri, Model model) {
+		
+		//데이터
+		//ArrayList<TripVO> list = tripService.getList(cri);
+		
+		//페이지네이션
+		//int total=tripService.getTotal();
+		//PageVO pageVO=new PageVO(cri, total);
+		//System.out.println(pageVO.toString());
+		
+		
+		//페이지 검색처리
 		/*
-		 * service, mapper영역에 getList함수를 선언하고
-		 * 등록번호 역순으로 데이터를 조회해서 가지고 나옵니다.
-		 * model에 담아서
-		 * 화면에서는 반복문으로 처리.
-		 *  
+		 * 1. 화면에서는 page, amount, searchType, searchName을 넘긴다.
+		 * 2. criteria에서 검색값을 받는다.
+		 * 3. sql문을 바꾼다. (동적쿼리)
+		 * 4. total sql문도 바꾼다.
+		 * 5. 페이지 a태그 클릭시 searchType과 searchName을 쿼리스트링으로 넘긴다.
+		 * 6. 검색키워드의 유지
 		 */
-		ArrayList<TripVO> list = tripService.getList();
+		//System.out.println(cri.toString());
+		ArrayList<TripVO> list = tripService.getList(cri);
+		int total=tripService.getTotal(cri);
+		PageVO pageVO=new PageVO(cri, total);
+
+		
+		
+		//값 넘기기
 		model.addAttribute("list",list);
+		model.addAttribute(pageVO);
+		
 		return "trip/notice_list";
 	}
 	
 	
 	//상세페이지
 	@RequestMapping("/notice_view")
-	public String notice_view(@RequestParam("tno")int tno, Model model,HttpServletResponse response, HttpServletRequest request) {
+	public String notice_view(Criteria cri,@RequestParam("tno")int tno, Model model,HttpServletResponse response, HttpServletRequest request) {
 		
 		//조회수-Cookie or 세션 이용해서 조회수 중복 방지
 		Cookie[] cookies=request.getCookies();
@@ -53,20 +76,24 @@ public class NoticeController {
 			for(Cookie c : cookies) {
 				if(c.getName().equals(Integer.toString(tno))) {
 					countCookie++;
-					c.setMaxAge(30);
 				}
 			}
-			
 			if(countCookie==0) {
-				Cookie cookie = new Cookie(Integer.toString(tno),"1");
+				Cookie cookie = new Cookie(Integer.toString(tno),Integer.toString(tno));
 				cookie.setMaxAge(30);
 				response.addCookie(cookie);
 				tripService.hitUpdate(tno); //조회수 업데이트
 			}
+			
 		
 			//클릭한 글 번호에 대한 내용을 조회
 			TripVO vo = tripService.getContent(tno);
 			model.addAttribute("vo",vo);
+			//검색 후 상세페이지에서 다시 목록으로 넘어갔을 때 값이 유지되도록 
+			int total=tripService.getTotal(cri);
+			PageVO pvo = new PageVO(cri,total);
+					
+			model.addAttribute("pvo",pvo);
 		
 		
 		
